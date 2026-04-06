@@ -28,14 +28,19 @@ SELECT      EMPLOYEE_ID, FIRST_NAME, LAST_NAME, SALARY
 
 
 -- 전화번호에 100이 포함된 직원
-SELECT       
+SELECT       EMPLOYEE_ID, FIRST_NAME, LAST_NAME, PHONE_NUMBER      
  FROM        EMPLOYEES 
- WHERE
- ORDER  BY 
-
+ WHERE       PHONE_NUMBER  LIKE '%010%'
+ ORDER  BY   EMPLOYEE_ID ASC;
 
 -- 50번 부서의 직원을 출력해라
-
+SELECT       EMPLOYEE_ID                       "사 번" ,     -- 사번 : ALIAS ,별칭, 별영
+             FIRST_NAME || ' ' || LAST_NAME    이름  , 
+             DEPARTMENT_ID                     부서번호
+ FROM        EMPLOYEES 
+ WHERE       DEPARTMENT_ID = 50
+ -- ORDER BY    FIRST_NAME || ' ' || LAST_NAME  ASC;
+ ORDER BY    FIRST_NAME ASC, LAST_NAME  ASC;
 
 -- 부서가 없는 직원을 출력
 
