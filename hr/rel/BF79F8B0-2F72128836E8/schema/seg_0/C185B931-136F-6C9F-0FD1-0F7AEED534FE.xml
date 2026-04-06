@@ -1,0 +1,6 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<SchemaObject class="oracle.dbtools.crest.model.design.relational.SchemaObject" name="HR" directorySegmentName="seg_0" id="C185B931-136F-6C9F-0FD1-0F7AEED534FE">
+<createdBy>GG</createdBy>
+<createdTime>2026-04-06 05:38:36 UTC</createdTime>
+<ownerDesignName>hr</ownerDesignName>
+</SchemaObject>
