@@ -411,7 +411,7 @@ SELECT      DEPARTMENT_ID       부서,
  ;
  
  -- 부서별 모우고 같은부서는 직업별 인원수, 월급평균
- SELECT      DEPARTMENT_ID               부서번호, 
+ SELECT      DEPARTMENT_ID               부서번호,  -- 부서명
              JOB_ID                      업무id,    -- JOB_TITLE
              COUNT( JOB_ID  )            인원수,   
              ROUND( AVG( SALARY ), 2)    월급평균
