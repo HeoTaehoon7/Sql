@@ -83,16 +83,75 @@ CALL   GET_EMPSAL( 107  );
    END;
 /   
  
-테스트
+테스트  : 90, 60, 50 - 결과가 한줄일때 문제 없다
 SET  SERVEROUTPUT ON;
 VAR    O_NAME  VARCHAR2;
 VAR    O_SAL   NUMBER;
-CALL   GET_NAME_MAXSAL( 60, :O_NAME, :O_SAL);
+CALL   GET_NAME_MAXSAL( 50, :O_NAME, :O_SAL);
 PRINT  O_NAME;
 PRINT  O_SAL;
---> JAVA 에서ㅜ 호출해서 쓴다 
- 
---   90 번 부서번호입력, 직원들 출력
+--> JAVA 에서 호출해서 쓴다 
+
+----------------------------------------------------------- 
+--   90 번 부서번호입력, 직원들 출력 : 결과가 여러줄일때 에러 발생
+CREATE  OR REPLACE  PROCEDURE  GETEMPLIST( 
+     IN_DEPTID   NUMBER  
+)
+IS
+     V_EMPID   NUMBER(6);     
+     V_FNAME   VARCHAR2(20);
+     V_LNAME   VARCHAR2(25);
+     V_PHONE   VARCHAR2(20);
+  BEGIN
+     SELECT    EMPLOYEE_ID, FIRST_NAME, LAST_NAME, PHONE_NUMBER
+       INTO    V_EMPID,     V_FNAME,    V_LNAME,   V_PHONE
+      FROM     EMPLOYEES
+      WHERE    DEPARTMENT_ID  =   IN_DEPTID;
+      
+     DBMS_OUTPUT.PUT_LINE( V_EMPID); 
+  END;
+ / 
+
+-- 테스트
+SET      SERVERPUTPUT ON;
+EXECUTE  GETEMPLIST( 90  );
+
+SP2-0158: "serverputp..."(으)로 시작되는 알 수 없는 SET 옵션입니다.
+BEGIN  GETEMPLIST( 90  ); END;
+*
+오류 발생 행: 1:
+ORA-01422: 실제 인출은 요구된 것보다 많은 수의 행을 추출합니다
+ORA-06512: "HR.GETEMPLIST",  10행
+ORA-06512:  1행
+
+결과가 3줄인데 한번만 출력했음
+*** SELECT INTO 는 결과가 한줄일때만 사용가능
+
+해결책) 커서(CURSOR) 사용
+-- 정상작동
+CREATE  OR REPLACE  PROCEDURE  GET_EMPLIST( 
+     IN_DEPTID  IN    NUMBER,
+     O_CUR      OUT   SYS_REFCURSOR  
+)
+IS
+  BEGIN
+     
+     OPEN  O_CUR  FOR
+         SELECT    EMPLOYEE_ID, FIRST_NAME, LAST_NAME, PHONE_NUMBER
+          FROM     EMPLOYEES
+          WHERE    DEPARTMENT_ID  =   IN_DEPTID;
+      
+  END;
+ / 
+
+--  테스트
+VARIABLE    O_CUR    REFCURSOR;
+EXECUTE     GET_EMPLIST( 50, :O_CUR)
+PRINT       O_CUR;
+
+
+
+
 
 
 
