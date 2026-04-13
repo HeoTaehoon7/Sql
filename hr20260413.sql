@@ -32,8 +32,11 @@ BEGIN
    END IF;
 END;
 /
- 
+
+-- ORCLE 로 프로시저를 생성한다 
 저장 프로시저 (IN :INPUT, OUT OUTPUT, INOUT : INPUTOUT)
+파라미터는  IN_EMPID  IN NUMBER 괄호와 숫자 사용하지 않는다 
+내부변수는  V_NAME              반드시 괄호와 숫자가 필요한다
 CREATE  PROCEDURE  GET_EMPSAL (  IN_EMPID  IN NUMBER  )
 IS
   V_NAME          VARCHAR2( 46 );   
@@ -44,18 +47,50 @@ IS
      FROM         EMPLOYEES
      WHERE        EMPLOYEE_ID  = IN_EMPID; 
      
-    DBMS_OUTPUT.PUT_LINE('이름:' || V_NAME ); 
-    DBMS_OUTPUT.PUT_LINE('월급:' || V_SAL  );  
+     DBMS_OUTPUT.PUT_LINE('이름:' || V_NAME ); 
+     DBMS_OUTPUT.PUT_LINE('월급:' || V_SAL  );  
   END;
 /  
 
+테스트
+SET    SERVEROUTPUT ON;  --  DBMS_OUTPUT.PUT_LINE() 의 결과를 화면에 출력
+CALL   GET_EMPSAL( 107  );
  
--- ORCLE 로 프로시저를 생성한다
+------------------------------------------------------------------
+  -- 부서번호입력, 해당부서의 최고월급자의 이름, 월급 출력
+ CREATE  OR REPLACE  PROCEDURE  GET_NAME_MAXSAL(
+       IN_DEPTID     IN     NUMBER,
+       O_NAME        OUT    VARCHAR2,
+       O_SAL         OUT    NUMBER
+ )
+ IS
+       V_MAXSAL   NUMBER(8, 2); 
+   BEGIN
+       SELECT     MAX(SALARY)
+        INTO      V_MAXSAL
+        FROM      EMPLOYEES
+        WHERE     DEPARTMENT_ID   =  IN_DEPTID;
+        
+      SELECT      FIRST_NAME || ' ' || LAST_NAME,   SALARY
+       INTO       O_NAME,                           O_SAL
+       FROM       EMPLOYEES
+       WHERE      SALARY          =   V_MAXSAL
+       AND        DEPARTMENT_ID   =   IN_DEPTID;
+       
+      DBMS_OUTPUT.PUT_LINE( O_NAME  ); 
+      DBMS_OUTPUT.PUT_LINE( O_SAL  );  
+   
+   END;
+/   
  
- 
- 
-
- -- 부서번호입력, 해당부서의 최고월급자의 이름, 월급 출력
+테스트
+SET  SERVEROUTPUT ON;
+VAR    O_NAME  VARCHAR2;
+VAR    O_SAL   NUMBER;
+CALL   GET_NAME_MAXSAL( 60, :O_NAME, :O_SAL);
+PRINT  O_NAME;
+PRINT  O_SAL;
+--> JAVA 에서ㅜ 호출해서 쓴다 
  
 --   90 번 부서번호입력, 직원들 출력
 
